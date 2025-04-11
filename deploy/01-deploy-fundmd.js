@@ -1,11 +1,34 @@
+const { network } = require("hardhat");
+const { LOCK_TIME, DEVELOPMENT_CHAINS, NETWORK_CONFIG, CONFIRMATIONS } = require("../helper-hardhat-config")
+
 module.exports = async({getNamedAccounts, deployments}) => {
   const {firstAccount} = await getNamedAccounts();
   const {deploy} = deployments;
-  await deploy("FundMe", {
+
+  let dataFeedAddress;
+  if (DEVELOPMENT_CHAINS.includes(network.name)) {
+    const mockV3Aggregator = await deployments.get("MockV3Aggregator");
+    dataFeedAddress = mockV3Aggregator.address;
+  } else {
+    dataFeedAddress = NETWORK_CONFIG[network.config.chainId].ethUsdDataFeed;
+  }
+
+  const fundme = await deploy("FundMe", {
     from: firstAccount,
-    args: [180],
-    log: true
+    args: [LOCK_TIME, dataFeedAddress],
+    log: true,
+    waitConfirmations: CONFIRMATIONS
   })
+
+  // verify fundMe
+  if (hre.network.config.chainId == 11155111 && process.env.APIKEY) {
+    await hre.run("verify:verify", {
+      address: fundme.address,
+      constructorArguments: [LOCK_TIME, dataFeedAddress],
+    });
+  } else {
+    console.log("Network is not sepolia, Verification skipped...")
+  }
 }
 
 module.exports.tags = ["all", "fundme"]
