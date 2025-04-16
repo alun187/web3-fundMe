@@ -5,19 +5,21 @@ module.exports = async({getNamedAccounts, deployments}) => {
   const {firstAccount} = await getNamedAccounts();
   const {deploy} = deployments;
 
-  let dataFeedAddress;
+  let dataFeedAddress; let confirmations;
   if (DEVELOPMENT_CHAINS.includes(network.name)) {
     const mockV3Aggregator = await deployments.get("MockV3Aggregator");
     dataFeedAddress = mockV3Aggregator.address;
+    confirmations = 0;
   } else {
     dataFeedAddress = NETWORK_CONFIG[network.config.chainId].ethUsdDataFeed;
+    confirmations = CONFIRMATIONS;
   }
 
   const fundme = await deploy("FundMe", {
     from: firstAccount,
     args: [LOCK_TIME, dataFeedAddress],
     log: true,
-    waitConfirmations: CONFIRMATIONS
+    waitConfirmations: confirmations
   })
 
   // verify fundMe
