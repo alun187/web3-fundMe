@@ -20,6 +20,9 @@ module.exports = {
       chainId: 11155111
     }
   },
+  mocha: {
+    timeout: 500000
+  },
   etherscan: {
     apiKey: {
       sepolia: ETHERSCAN_API_KEY
@@ -32,5 +35,8 @@ module.exports = {
     secondAccount: {
       default: 1
     }
+  },
+  gasReporter: {
+    enabled: false
   }
 };

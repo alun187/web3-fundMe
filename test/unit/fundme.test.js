@@ -1,8 +1,11 @@
 const { ethers, deployments, getNamedAccounts } = require("hardhat")
 const { assert, expect } = require("chai")
 const helpers = require("@nomicfoundation/hardhat-network-helpers")
+const { DEVELOPMENT_CHAINS } = require("../../helper-hardhat-config")
 
-describe("test fundme contract", async function () {
+!DEVELOPMENT_CHAINS.includes(network.name)
+?describe.skip
+:describe("test fundme contract", async function () {
   let fundme; let firstAccount; let secondAccount; let fundMeSecondAccount;
   beforeEach(async function() {
     await deployments.fixture("all");
