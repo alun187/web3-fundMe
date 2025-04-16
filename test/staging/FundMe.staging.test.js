@@ -18,19 +18,19 @@ DEVELOPMENT_CHAINS.includes(network.name)
   // test fund and getFund sucessfully
   it("fund and getFund sucessfully", async function() {
     // make sure target reached
-    await fundme.fund({value: ethers.parseEther("0.1")});
+    await fundme.fund({value: ethers.parseEther("0.5")});
     // make sure window closed
     await new Promise(resole => setTimeout(resole, 181 * 1000));
     // make sure we can get receipt
     const getFundTx = await fundme.getFund();
     const getFundReceipt = await getFundTx.wait();
-    expect(getFundReceipt).to.be.emit(fundme, "FundWithdrawByOwner").withArgs(ethers.parseEther("0.1"));
+    expect(getFundReceipt).to.be.emit(fundme, "FundWithdrawByOwner").withArgs(ethers.parseEther("0.5"));
   })
 
    // test fund and reFund sucessfully
    it("fund and reFund sucessfully", async function() {
     // make sure target not reached
-    await fundme.fund({value: ethers.parseEther("0.01")});
+    await fundme.fund({value: ethers.parseEther("0.1")});
     // make sure window closed
     await new Promise(resole => setTimeout(resole, 181 * 1000));
     // make sure we can get receipt
